@@ -1,18 +1,28 @@
 #! /usr/bin/python3
 """base class"""
 
-import datetime
+from datetime import datetime
 from uuid import uuid4
 
 
 class BaseModel:
     """actual base class"""
 
-    def __init__(self):
+    def __init__(self, *ars, **kwargs):
         """instance of base class"""
-        self.id = str(uuid4())
-        self.created_at = datetime.datetime.now().isoformat()
-        self.updated_at = datetime.datetime.now().isoformat()
+        if kwargs:
+            del kwargs["__class__"]
+            for key, val in kwargs.items():
+                if key == "created_at" or key == "updated_at":
+                    new_val = val.isoformat()
+                    setattr(self, key, new_val)
+                else:
+                    setattr(self, key, val)
+
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now().isoformat()
+            self.updated_at = datetime.now().isoformat()
 
     def __str__(self):
         """magic method __str__ to print [<class name>] (<self.id>)
