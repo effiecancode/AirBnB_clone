@@ -1,5 +1,6 @@
-#! /usr/bin/python3
-"""init file"""
+#!/usr/bin/python3
+"""create an instance of the FileStorage module"""
 
-
-classes = {'BaseModel': 'BaseModel'}
+from models.engine.file_storage import FileStorage
+storage = FileStorage()
+storage.reload()

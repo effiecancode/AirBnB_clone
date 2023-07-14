@@ -3,6 +3,7 @@
 
 from datetime import datetime
 from uuid import uuid4
+from models import storage
 
 
 class BaseModel:
@@ -23,6 +24,7 @@ class BaseModel:
             self.id = str(uuid4())
             self.created_at = datetime.now().isoformat()
             self.updated_at = datetime.now().isoformat()
+            storage.new(self)
 
     def __str__(self):
         """magic method __str__ to print [<class name>] (<self.id>)
@@ -33,6 +35,7 @@ class BaseModel:
     def save(self):
         """Updated the public instance attribute with current time"""
         self.updated_at = datetime.now
+        storage.save()
 
     def to_dict(self):
         """function to return a dictionary containign all
