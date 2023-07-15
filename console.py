@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 """console"""
 import cmd
+import shlex
 import sys
 from models import storage
 from models.base_model import BaseModel
@@ -42,62 +43,67 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """creates a new instance of BaseModel"""
-        if args:
-            args_list = args.split()
-            if len(args_list) == 1:
-                if args in self.options.keys():
-                    new_obj = self.options[args]()
-                    new_obj.save()
-                    print(new_obj.id)
-                else:
-                    print("** class doesn't exist **")
-        else:
+        args = shlex.split(args)
+        if len(args) == 0:
             print("** class name missing **")
+            return
+        if args[0] in self.options:
+            implementation = self.options[args[0]]
+        else:
+            print("** class doesn't exist **")
+            return
+        print(implementation.id)
+        BaseModel.save()
+        
+                    
 
     def do_show(self, args):
         """Prints the string representation of an instance
         based on the class name and id"""
+        args = shlex.split(args)
         if len(args) == 0:
             print("** class name missing **")
             return
-        my_dict = storage.all()
-        if args:
-            args_list = args.split()
-            if args_list[0] not in self.options.keys():
-                print("** class doesn't exist **")
-            elif len(args_list) == 1:
-                print("** instance id missing **")
-            elif f"{args_list[0]}.{args_list[1]}" not in my_dict:
-                print("** no instance found **")
+        if args[0] in self.options:
+            if len(args) > 1:
+                arg_id = f"{args[0]}.{args[1]}"
+                if arg_id in storage.all():
+                    print(storage.all()[arg_id])
+                else:
+                    print("** no instance found **")
             else:
-                print(my_dict[f"{args_list[0]}.{args_list[1]}"])
+                print("** instance id missing **")
+        else:
+            print("** class doesn't exist **")
+            
 
     def do_destroy(self, args):
         """ Deletes an instance based on the class name and id"""
-        if args:
-            arg_list = args.split()
-            try:
-                obj = eval(arg_list[0])
-            except Exception:
-                print("** class doesn't exist **")
-            if len(arg_list) == 1:
-                print('** instance id missing **')
-            if len(arg_list) > 1:
-                key = arg_list[0] + '.' + arg_list[1]
-                if key in storage.all():
-                    storage.all().pop(key)
+        args = shlex.split(args)
+        if len(args) == 0:
+            print("** class name missing **")
+            return
+        if args[0] in self.options:
+            if len(args) > 1:
+                args_id = f"{args[0]}.{args[1]}"
+                if args_id in storage.all():
+                    storage.all().pop(args_id)
                     storage.save()
                 else:
-                    print('** no instance found **')
+                    print("** no instance found **")
+            else:
+                print("** instance id missing **")
         else:
-            print("** class name missing **")
+            print("** class doesn't exist **")
+            
 
     def do_all(self, args):
         """ Prints all string representation of all
         instances based or not on the class name. """
+        args = shlex.split(args)
         if len(args) == 0:
             print([str(a) for a in storage.all().values()])
-        elif args not in self.options:
+        elif args[0] not in self.options:
             print("** class doesn't exist **")
         else:
             print([str(a) for b, a in storage.all().items() if args in b])
