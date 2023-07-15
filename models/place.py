@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Class Place """
+""" Class Place (child class of BaseModel) """
 
 from models.base_model import BaseModel
 

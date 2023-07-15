@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Class Review """
+""" Class Review (child class of BaseModel)"""
 from models.base_model import BaseModel
 
 

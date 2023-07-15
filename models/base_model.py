@@ -1,33 +1,14 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 """base class"""
 from datetime import datetime
 from uuid import uuid4
-# import models
 import models
 
 
 class BaseModel:
     """actual base class"""
-
-    # def __init__(self, *args, **kwargs):
-    #     """instance of base class"""
-    #     if kwargs:
-    #         del kwargs["__class__"]
-    #         for key, val in kwargs.items():
-    #             if key == "created_at" or key == "updated_at":
-    #                 new_val = val.isoformat()
-    #                 setattr(self, key, new_val)
-    #             else:
-    #                 setattr(self, key, val)
-
-    #     else:
-    #         self.id = str(uuid4())
-    #         self.created_at = datetime.now()
-    #         self.updated_at = datetime.now()
-    #         storage.new(self)
-
     def __init__(self, *args, **kwargs):
-        """ Construct """
+        """ Construct anew instance """
         if kwargs:
             for key, value in kwargs.items():
                 if key == '__class__':

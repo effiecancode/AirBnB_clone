@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 """ Contains the FileStorage class to implement the flow:
 <class 'BaseModel'> -> to_dict() -> <class 'dict'> -> JSON dump ->
 <class 'str'> -> FILE -> <class 'str'> -> JSON load -> <class 'dict'>
@@ -39,22 +39,6 @@ class FileStorage:
 
             with open(FileStorage.__file_path, "w", encoding="utf-8") as jfile:
                 json.dump(objdict, jfile)
-
-    # def reload(self):
-    #     """deserializes the JSON file to __objects """
-    #     dict_mapper = {"MyBase": BaseModel}
-
-    #     try:
-    #         with open(FileStorage.__file_path, "r",
-    # encoding="utf-8") as jsonf:
-    #             Deserialized = json.load(jsonf)
-    #             for obj_v in Deserialized.values():
-    #                 Cls_name = obj_v["__class__"]
-    #                 Cls_object = dict_mapper[Cls_name]
-    #                 self.new(Cls_object(**obj_v))
-
-    #     except FileNotFoundError:
-    #         pass
 
     def reload(self):
         """ Reload the file """
