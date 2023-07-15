@@ -15,6 +15,12 @@ from models.place import Place
 from models.review import Review
 
 
+classes = {
+    "State": State, "Amenity": Amenity, "Review": Review,
+    "BaseModel": BaseModel, "City": City, "Place": Place, "User": User
+}
+
+
 class FileStorage:
     """ FileStorage class, serializes instances to a JSON file
     and deserializes JSON file to instances
@@ -40,11 +46,29 @@ class FileStorage:
             with open(FileStorage.__file_path, "w", encoding="utf-8") as jfile:
                 json.dump(objdict, jfile)
 
+    # def reload(self):
+    #     """ Reload the file """
+    #     if (os.path.isfile(FileStorage.__file_path)):
+    #         with open(FileStorage.__file_path, 'r', encoding="utf-8") as fname:
+    #             l_json = json.load(fname)
+    #             for key, val in l_json.items():
+    #                 FileStorage.__objects[key] = eval(
+    #                     val['__class__'])(**val)
+
+
     def reload(self):
-        """ Reload the file """
-        if (os.path.isfile(FileStorage.__file_path)):
-            with open(FileStorage.__file_path, 'r', encoding="utf-8") as fname:
-                l_json = json.load(fname)
-                for key, val in l_json.items():
-                    FileStorage.__objects[key] = eval(
-                        val['__class__'])(**val)
+        """deserializes the JSON file to __objects
+        """
+        file_name = self.__file_path
+        try:
+            with open(file_name, "r", encoding="utf-8") as f:
+                str_json = f.read()
+                dict_obj = json.loads(str_json)
+
+                for k in dict_obj:
+                    self.__objects[k] = classes[dict_obj[k]["__class__"]](
+                        **dict_obj[k]
+                    )
+
+        except FileNotFoundError:
+            pass
