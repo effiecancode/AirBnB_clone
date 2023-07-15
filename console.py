@@ -41,21 +41,20 @@ class HBNBCommand(cmd.Cmd):
         """empty line"""
         pass
 
-    def do_create(self, args):
-        """creates a new instance of BaseModel"""
-        args = shlex.split(args)
-        if len(args) == 0:
-            print("** class name missing **")
+    def do_create(self, arg):
+        """ Create a new instance """
+        if len(arg) == 0:
+            print('** class name missing **')
             return
-        if args[0] in self.options:
-            implementation = self.options[args[0]]
-        else:
-            print("** class doesn't exist **")
-            return
-        print(implementation.id)
-        BaseModel.save()
-        
-                    
+        if arg:
+            arg_list = arg.split()
+            if len(arg_list) == 1:
+                if arg in self.options.keys():
+                    new_obj = self.options[arg]()
+                    new_obj.save()
+                    print(new_obj.id)
+                else:
+                    print("** class doesn't exist **")
 
     def do_show(self, args):
         """Prints the string representation of an instance
@@ -75,7 +74,6 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
         else:
             print("** class doesn't exist **")
-            
 
     def do_destroy(self, args):
         """ Deletes an instance based on the class name and id"""
@@ -95,15 +93,13 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
         else:
             print("** class doesn't exist **")
-            
 
     def do_all(self, args):
         """ Prints all string representation of all
         instances based or not on the class name. """
-        args = shlex.split(args)
         if len(args) == 0:
             print([str(a) for a in storage.all().values()])
-        elif args[0] not in self.options:
+        elif args not in self.options:
             print("** class doesn't exist **")
         else:
             print([str(a) for b, a in storage.all().items() if args in b])
