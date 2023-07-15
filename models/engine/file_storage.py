@@ -6,6 +6,12 @@
 """
 import json
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class FileStorage:
@@ -15,7 +21,7 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all():
+    def all(self):
         """returns the dictionary __objects"""
         return FileStorage.__objects
 
@@ -30,7 +36,7 @@ class FileStorage:
         for k, v in FileStorage.__objects.items():
             objdict[k] = v.to_dict()
 
-            with open(FileStorage.__file_path, "W", encoding="utf-8") as jfile:
+            with open(FileStorage.__file_path, "w", encoding="utf-8") as jfile:
                 json.dump(objdict, jfile)
 
     def reload(self):
