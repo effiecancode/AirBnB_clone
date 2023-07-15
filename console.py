@@ -2,11 +2,16 @@
 """console"""
 import cmd
 import sys
-import json
-import os
 from models import storage
 from models.base_model import BaseModel
-from models import amenity, city, place, review, state, user
+from models.user import User
+from models.state import State
+from models.review import Review
+from models.place import Place
+from models.city import City
+from models.amenity import Amenity
+
+
 
 
 sys.path.append("/home/njuguna/Desktop/alx/SE foundations/AirBnB_clone/models")
@@ -15,7 +20,14 @@ sys.path.append("/home/njuguna/Desktop/alx/SE foundations/AirBnB_clone/models")
 class HBNBCommand(cmd.Cmd):
     """console class"""
     prompt = "(hbnb) "
-    options = {"BaseModel": BaseModel}
+    options = {"BaseModel": BaseModel,
+               "Amenity": Amenity,
+               "City": City,
+               "Place": Place,
+               "Review": Review,
+               "State": State,
+               "User": User
+               }
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
