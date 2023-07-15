@@ -41,7 +41,7 @@ class FileStorage:
                 json.dump(objdict, jfile)
 
     # def reload(self):
-    #     """deserializes the JSON file to __objects"""
+    #     """deserializes the JSON file to __objects """
     #     dict_mapper = {"MyBase": BaseModel}
 
     #     try:
