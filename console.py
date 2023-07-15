@@ -1,21 +1,15 @@
 #! /usr/bin/python3
 """console"""
 import cmd
-import sys
-import json
-import os
-from models import storage
+
 from models.base_model import BaseModel
-from models import amenity, city, place, review, state, user
-
-
-sys.path.append("/home/njuguna/Desktop/alx/SE foundations/AirBnB_clone/models")
+from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
     """console class"""
     prompt = "(hbnb) "
-    options = {"BaseModel": BaseModel}
+    options = {"BaseModel":BaseModel}
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
@@ -45,11 +39,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
 
     def do_show(self, args):
-        """Prints the string representation of an instance
+        """Prints the string representation of an instance 
         based on the class name and id"""
-        if len(args) == 0:
-            print("** class name missing **")
-            return
         my_dict = storage.all()
         if args:
             args_list = args.split()
@@ -61,6 +52,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
             else:
                 print(my_dict[f"{args_list[0]}.{args_list[1]}"])
+        else:
+            print("** class name missing **")
 
     def do_destroy(self, args):
         """ Deletes an instance based on the class name and id"""
@@ -82,12 +75,13 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class name missing **")
 
+
     def do_all(self, args):
-        """ Prints all string representation of all
+        """ Prints all string representation of all 
         instances based or not on the class name. """
         if len(args) == 0:
             print([str(a) for a in storage.all().values()])
-        elif args not in self.options:
+        elif args not in self.classes:
             print("** class doesn't exist **")
         else:
             print([str(a) for b, a in storage.all().items() if args in b])
@@ -97,7 +91,7 @@ class HBNBCommand(cmd.Cmd):
         arg = arg.split()
         if len(arg) == 0:
             print('** class name missing **')
-        elif arg[0] not in self.options:
+        elif arg[0] not in self.classes:
             print("** class doesn't exist **")
         elif len(arg) == 1:
             print('** instance id missing **')
@@ -117,6 +111,8 @@ class HBNBCommand(cmd.Cmd):
                     print('** attribute name missing **')
             else:
                 print('** no instance found **')
+
+
 
 
 if __name__ == "__main__":
