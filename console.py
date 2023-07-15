@@ -12,7 +12,7 @@ from models.city import City
 from models.amenity import Amenity
 
 
-sys.path.append("/home/njuguna/Desktop/alx/SE foundations/AirBnB_clone/models")
+sys.path.append("/home/njuguna/Desktop/alx/SEfoundations/AirBnB_clone/models")
 
 
 class HBNBCommand(cmd.Cmd):
