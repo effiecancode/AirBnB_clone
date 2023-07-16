@@ -41,14 +41,23 @@ class HBNBCommand(cmd.Cmd):
         """empty line"""
         pass
     
+    # def __getattr__(self, attr):
+    #     """Custom attribute getter to enable ClassName.function() syntax"""
+    #     class_name = attr.split(".")[0]
+    #     if class_name in self.options:
+    #         return lambda: self.do_all(class_name)
+    #     else:
+    #         raise AttributeError(f"'HBNBCommand' object has no attribute '{attr}'")
     def __getattr__(self, attr):
-        """Custom attribute getter to enable ClassName.all() syntax"""
+        """Custom attribute getter to enable ClassName.function() syntax"""
         class_name = attr.split(".")[0]
         if class_name in self.options:
-            return lambda: self.do_all(class_name)
-        else:
-            raise AttributeError(f"'HBNBCommand' object has no attribute '{attr}'")
-   
+            if attr.endswith('.all()'):
+                return lambda: self.do_all(class_name)
+            elif attr.endswith('.destroy'):
+                return lambda id: self.do_destroy(f"{class_name} {id}")
+        raise AttributeError(f"'HBNBCommand' object has no attribute '{attr}'")
+    
     def default(self, line):
         """Handles the ClassName.all() syntax"""
         tokens = line.split('.')
@@ -56,6 +65,32 @@ class HBNBCommand(cmd.Cmd):
             class_name = tokens[0]
             if class_name in self.options:
                 self.do_all(class_name)
+                return
+        super().default(line)
+        
+        """Handles the ClassName.count() syntax"""
+        if len(tokens) == 2 and tokens[1] == 'count()':
+            class_name = tokens[0]
+            if class_name in self.options:
+                self.do_count(class_name)
+                return
+        super().default(line)
+        
+        """Handles the ClassName.show(id) syntax"""
+        if len(tokens) == 2 and tokens[1].startswith('show(') and tokens[1].endswith(')'):
+            class_name = tokens[0]
+            if class_name in self.options:
+                instance_id = tokens[1][5:-1]
+                self.do_show(f"{class_name} {instance_id}")
+                return
+        super().default(line)
+        
+        """Handles the ClassName.destroy(id) syntax"""
+        if len(tokens) == 2 and tokens[1].startswith('destroy(') and tokens[1].endswith(')'):
+            class_name = tokens[0]
+            if class_name in self.options:
+                instance_id = tokens[1][8:-1]
+                self.do_destroy(f"{class_name} {instance_id}")
                 return
         super().default(line)
 
@@ -75,6 +110,25 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print("** class doesn't exist **")
 
+    # def do_show(self, args):
+    #     """Prints the string representation of an instance
+    #     based on the class name and id"""
+    #     args = shlex.split(args)
+    #     if len(args) == 0:
+    #         print("** class name missing **")
+    #         return
+    #     if args[0] in self.options:
+    #         if len(args) > 1:
+    #             arg_id = f"{args[0]}.{args[1]}"
+    #             if arg_id in storage.all():
+    #                 print(storage.all()[arg_id])
+    #             else:
+    #                 print("** no instance found **")
+    #         else:
+    #             print("** instance id missing **")
+    #     else:
+    #         print("** class doesn't exist **")
+    
     def do_show(self, args):
         """Prints the string representation of an instance
         based on the class name and id"""
@@ -84,9 +138,12 @@ class HBNBCommand(cmd.Cmd):
             return
         if args[0] in self.options:
             if len(args) > 1:
-                arg_id = f"{args[0]}.{args[1]}"
-                if arg_id in storage.all():
-                    print(storage.all()[arg_id])
+                arg_id = args[1]
+                class_name = args[0]
+                instance_key = f"{class_name}.{arg_id}"
+                instances = storage.all()
+                if instance_key in instances:
+                    print(instances[instance_key])
                 else:
                     print("** no instance found **")
             else:
@@ -94,17 +151,39 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
+
+    # def do_destroy(self, args):
+    #     """ Deletes an instance based on the class name and id"""
+    #     args = shlex.split(args)
+    #     if len(args) == 0:
+    #         print("** class name missing **")
+    #         return
+    #     if args[0] in self.options:
+    #         if len(args) > 1:
+    #             args_id = f"{args[0]}.{args[1]}"
+    #             if args_id in storage.all():
+    #                 storage.all().pop(args_id)
+    #                 storage.save()
+    #             else:
+    #                 print("** no instance found **")
+    #         else:
+    #             print("** instance id missing **")
+    #     else:
+    #         print("** class doesn't exist **")
     def do_destroy(self, args):
-        """ Deletes an instance based on the class name and id"""
+        """Deletes an instance based on the class name and id"""
         args = shlex.split(args)
         if len(args) == 0:
             print("** class name missing **")
             return
         if args[0] in self.options:
             if len(args) > 1:
-                args_id = f"{args[0]}.{args[1]}"
-                if args_id in storage.all():
-                    storage.all().pop(args_id)
+                arg_id = args[1]
+                class_name = args[0]
+                instance_key = f"{class_name}.{arg_id}"
+                instances = storage.all()
+                if instance_key in instances:
+                    del instances[instance_key]
                     storage.save()
                 else:
                     print("** no instance found **")
@@ -112,6 +191,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
         else:
             print("** class doesn't exist **")
+
 
     # def do_all(self, args):
     #     """ Prints all string representation of all
@@ -164,22 +244,19 @@ class HBNBCommand(cmd.Cmd):
             else:
                 print('** no instance found **')
 
-    # def do_count(self, args):
-    #     """Usage: count <class> or <class>.count()
-    #     Retrieve the number of instances of a given class."""
-    #     # argl = shlex.split(arg)
-    #     # count = 0
-    #     # for obj in storage.all().values():
-    #     #     if argl[0] == obj.__class__.__name__:
-    #     #         count += 1
-    #     # print(count)
-    #     args = shlex.split(args)
-    #     my_dict = storage.all()
-    #     appearances = [
-    #         appearance for appearance in my_dict if 
-    #         appearance.startswith("." + args[0])
-    #     ]
-    #     print(len(appearances))
+    def do_count(self, arg):
+        """Retrieve the number of instances of a given class"""
+        arg_list = arg.split()
+        if len(arg_list) == 1:
+            class_name = arg_list[0]
+            if class_name in self.options:
+                count = sum(1 for obj in storage.all().values() if isinstance(obj, self.options[class_name]))
+                print(count)
+            else:
+                print("** class doesn't exist **")
+        else:
+            print("** class name missing **")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
