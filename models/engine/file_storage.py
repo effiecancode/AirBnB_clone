@@ -4,21 +4,14 @@
 <class 'str'> -> FILE -> <class 'str'> -> JSON load -> <class 'dict'>
 -> <class 'BaseModel'>
 """
-import os
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
-
-
-classes = {
-    "State": State, "Amenity": Amenity, "Review": Review,
-    "BaseModel": BaseModel, "City": City, "Place": Place, "User": User
-}
+# # from models.base_model import BaseModel
+# from models.user import User
+# from models.state import State
+# from models.city import City
+# from models.amenity import Amenity
+# from models.place import Place
+# from models.review import Review
 
 
 class FileStorage:
@@ -30,45 +23,36 @@ class FileStorage:
 
     def all(self):
         """returns the dictionary __objects"""
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
         """sets in dict __objects the obj with key <obj class name>.id """
         key = f"{obj.__class__.__name__}.{obj.id}"
-        FileStorage.__objects[key] = obj
+        self.__objects[key] = obj
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
         objdict = {}
-        for k, v in FileStorage.__objects.items():
+        for k, v in self.__objects.items():
             objdict[k] = v.to_dict()
 
-            with open(FileStorage.__file_path, "w", encoding="utf-8") as jfile:
+            with open(self.__file_path, "w", encoding="utf-8") as jfile:
                 json.dump(objdict, jfile)
-
-    # def reload(self):
-    #     """ Reload the file """
-    #     if (os.path.isfile(FileStorage.__file_path)):
-    #         with open(FileStorage.__file_path, 'r', encoding="utf-8") as fname:
-    #             l_json = json.load(fname)
-    #             for key, val in l_json.items():
-    #                 FileStorage.__objects[key] = eval(
-    #                     val['__class__'])(**val)
-
-
+                
     def reload(self):
-        """deserializes the JSON file to __objects
-        """
-        file_name = self.__file_path
+        """handle reload"""
+        from models.base_model import BaseModel
+
         try:
-            with open(file_name, "r", encoding="utf-8") as f:
-                str_json = f.read()
-                dict_obj = json.loads(str_json)
-
-                for k in dict_obj:
-                    self.__objects[k] = classes[dict_obj[k]["__class__"]](
-                        **dict_obj[k]
-                    )
-
+            with open(self.__file_path, 'r') as file:
+                obj_dict = json.load(file)
+                for key, value in obj_dict.items():
+                    class_name = value['__class__']
+                    if class_name == 'BaseModel':
+                        obj = BaseModel(**value)
+                    else:
+                        """ Handle other classes"""
+                        continue
+                    self.__objects[key] = obj
         except FileNotFoundError:
             pass
