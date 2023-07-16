@@ -2,7 +2,7 @@
 """console"""
 import cmd
 import shlex
-import sys
+import ast
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -11,9 +11,6 @@ from models.review import Review
 from models.place import Place
 from models.city import City
 from models.amenity import Amenity
-
-
-sys.path.append("/home/njuguna/Desktop/alx/SEfoundations/AirBnB_clone/models")
 
 
 class HBNBCommand(cmd.Cmd):
@@ -65,7 +62,9 @@ class HBNBCommand(cmd.Cmd):
         if len(tokens) == 2 and tokens[1] == 'count()':
             class_name = tokens[0]
             if class_name in self.options:
-                self.do_count(class_name)
+                count = sum(1 for obj in storage.all().values()
+                            if isinstance(obj, self.options[class_name]))
+                print(count)
                 return
         super().default(line)
 
@@ -87,6 +86,39 @@ class HBNBCommand(cmd.Cmd):
                     instance_id = tokens[1][8:-1]
                     self.do_destroy(f"{class_name} {instance_id}")
                     return
+        super().default(line)
+
+        """Handles the ClassName.update(id, attribute, value) syntax"""
+        if len(tokens) == 2 and tokens[1].startswith('update('):
+            if tokens[1].endswith(')'):
+                cls_name = tokens[0]
+                if cls_name in self.options:
+                    update_tokens = tokens[1][7:-1].split(', ')
+                    if len(update_tokens) == 3:
+                        inst_id = update_tokens[0]
+                        attr_name = update_tokens[1]
+                        attr_val = update_tokens[2]
+                        m_upd = f"{cls_name} {inst_id} {attr_name} {attr_val}"
+                        self.do_update(m_upd)
+                        return
+        super().default(line)
+
+        """Handles the ClassName.update(id, dictionary_rep) syntax"""
+        if len(tokens) == 2 and tokens[1].startswith('update('):
+            if tokens[1].endswith(')'):
+                class_name = tokens[0]
+                if class_name in self.options:
+                    update_tokens = tokens[1][7:-1].split(', ', 1)
+                    if len(update_tokens) == 2:
+                        inst_id = update_tokens[0]
+                        dictionary_repr = update_tokens[1]
+                        try:
+                            attr_dict = ast.literal_eval(dictionary_repr)
+                            my_update = f"{class_name} {inst_id}", attr_dict
+                            self.do_update(my_update)
+                            return
+                        except (ValueError, SyntaxError):
+                            pass
         super().default(line)
 
     def do_create(self, arg):

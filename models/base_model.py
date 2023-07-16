@@ -1,8 +1,10 @@
 #!/usr/bin/python3
-"""base class"""
-from datetime import datetime
-from uuid import uuid4
-import models
+"""Base model"""
+import uuid
+from datetime import datetime as dt
+
+
+f = '%Y-%m-%dT%H:%M:%S.%f'
 
 
 class BaseModel:
@@ -10,25 +12,18 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """ Construct anew instance """
         if kwargs:
-            for key, value in kwargs.items():
-                if key == '__class__':
-                    continue
-                elif key == 'updated_at':
-                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-                elif key == 'created_at':
-                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-                if 'id' not in kwargs.keys():
-                    self.id = str(uuid4())
-                if 'created_at' not in kwargs.keys():
-                    self.created_at = datetime.now()
-                if 'updated_at' not in kwargs.keys():
-                    self.updated_at = datetime.now()
-                setattr(self, key, value)
+            if 'created_at' in kwargs:
+                kwargs['created_at'] = dt.strptime(kwargs['created_at'], f)
+            if 'updated_at' in kwargs:
+                kwargs['updated_at'] = dt.strptime(kwargs['updated_at'], f)
+            kwargs.pop('__class__', None)
+            self.__dict__ = kwargs
         else:
-            self.id = str(uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = self.created_at
-            models.storage.new(self)
+            from models import storage
+            self.id = str(uuid.uuid4())
+            self.created_at = dt.now()
+            self.updated_at = dt.now()
+            storage.new(self)
 
     def __str__(self):
         """magic method __str__ to print [<class name>] (<self.id>)
@@ -38,8 +33,9 @@ class BaseModel:
 
     def save(self):
         """Updated the public instance attribute with current time"""
+        from models import storage
         self.updated_at = datetime.now()
-        models.storage.save()
+        storage.save()
 
     def to_dict(self):
         """function to return a dictionary containign all
