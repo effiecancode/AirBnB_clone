@@ -4,7 +4,7 @@ from models.base_model import BaseModel
 
 
 class State(BaseModel):
-    """ State class that inherits BaseModel"""
+    """ State class that inherits BaseMode l"""
     name = ""
 
     def __init__(self, *args, **kwargs):

@@ -8,7 +8,7 @@ f = '%Y-%m-%dT%H:%M:%S.%f'
 
 
 class BaseModel:
-    """actual base class"""
+    """actual base Class"""
     def __init__(self, *args, **kwargs):
         """ Construct anew instance """
         if kwargs:

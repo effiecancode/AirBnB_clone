@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Contains the FileStorage class to implement the flow:
+""" Contains the FileStorage Class to implement the flow:
 <class 'BaseModel'> -> to_dict() -> <class 'dict'> -> JSON dump ->
 <class 'str'> -> FILE -> <class 'str'> -> JSON load -> <class 'dict'>
 -> <class 'BaseModel'>
@@ -38,7 +38,7 @@ class FileStorage:
 
             with open(self.__file_path, "w", encoding="utf-8") as jfile:
                 json.dump(objdict, jfile)
-                
+
     def reload(self):
         """handle reload"""
         from models.base_model import BaseModel

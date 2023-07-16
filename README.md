@@ -5,12 +5,16 @@ This is the first part of the AirBnB clone project towards building our first fu
  where we work on the backend of the project while using a console
 application as our interface with the help of the cmd module in python.
 
+==================================================================================================
+
 Command interpreter functionalities:
 Create a new object (ex: a new User or a new Place)
 Retrieve an object from a file, a database etc...
 Do operations on objects (count, compute stats, etc...)
 Update attributes of an object
 Destroy an object
+
+==================================================================================================
 
 How it works:
 Clone the repository.
@@ -47,3 +51,6 @@ help or ?
 To exit the console run:
 quit or EOF
 
+Authors:
+Effie Njoki
+Alex Njuguna
