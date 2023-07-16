@@ -3,7 +3,7 @@
 
 import unittest
 from models.base_model import BaseModel
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import sys
 
@@ -11,6 +11,43 @@ sys.path.append("/Users/mac/Alx/AirBnB_clone/tests/tests_models/test_base_model.
 # module = __import__(BaseModel)
 
 class TestBaseModel(unittest.TestCase):
+    def setUp(self):
+        self.base_model = BaseModel()
+
+    def test_new_instance_with_no_arguments(self):
+        model = BaseModel()
+        self.assertIsInstance(model, BaseModel)
+        self.assertTrue(hasattr(model, 'id'))
+        self.assertTrue(hasattr(model, 'created_at'))
+        self.assertTrue(hasattr(model, 'updated_at'))
+        self.assertIsInstance(model.created_at, datetime)
+        self.assertIsInstance(model.updated_at, datetime)
+        self.assertIsNotNone(model.id)
+
+    def test_new_instance_with_arguments(self):
+        data = {
+            'id': 'some_id',
+            'created_at': '2023-07-16T12:00:00.000000',
+            'updated_at': '2023-07-16T13:00:00.000000',
+            'name': 'Test Model',
+            'value': 42
+        }
+        model = BaseModel(**data)
+        self.assertIsInstance(model, BaseModel)
+        self.assertEqual(model.id, 'some_id')
+        self.assertEqual(str(model.created_at), '2023-07-16 12:00:00')
+        self.assertEqual(str(model.updated_at), '2023-07-16 13:00:00')
+        self.assertEqual(model.name, 'Test Model')
+        self.assertEqual(model.value, 42)
+
+    def test_new_instance_with_invalid_date_format(self):
+        data = {
+            'id': 'some_id',
+            'created_at': '2023-07-16T12:00:00',
+            'updated_at': '2023-07-16 13:00:00',
+        }
+        with self.assertRaises(ValueError):
+            BaseModel(**data)
 
     def test_init_with_kwargs(self):
         data = {
@@ -38,7 +75,47 @@ class TestBaseModel(unittest.TestCase):
         prev_updated_at = obj.updated_at
         obj.save()
 
-        self.assertNotEqual(prev_updated_at, obj.updated_at)
+
+    def test_save_updates_updated_at(self):
+        """Test if save function updates the updated_at attribute"""
+        initial_updated_at = self.base_model.updated_at
+        self.base_model.save()
+        updated_updated_at = self.base_model.updated_at
+
+        self.assertNotEqual(initial_updated_at, updated_updated_at)
+        self.assertTrue(updated_updated_at > initial_updated_at)
+
+    def test_save_updates_created_at_on_new_instance(self):
+        """Test if save function updates the created_at attribute on a new instance"""
+        new_instance = BaseModel()
+        self.assertIsNone(new_instance.created_at)  # created_at should be None before save
+        new_instance.save()
+        self.assertIsInstance(new_instance.created_at, datetime)
+
+    def test_save_does_not_update_created_at_on_existing_instance(self):
+        """Test if save function does not update the created_at attribute on an existing instance"""
+        existing_instance = BaseModel()
+        created_at_before_save = existing_instance.created_at
+        existing_instance.save()
+        created_at_after_save = existing_instance.created_at
+
+        self.assertEqual(created_at_before_save, created_at_after_save)
+
+    # def test_save_updates_updated_at_on_existing_instance(self):
+    #     """Test if save function updates the updated_at attribute on an existing instance"""
+    #     existing_instance = BaseModel()
+    #     updated_at_before_save = existing_instance.updated_at
+
+    #     # Artificially set an older updated_at value to test the update
+    #     existing_instance.updated_at = datetime.now() - timedelta(days=1)
+
+    #     existing_instance.save()
+    #     updated_at_after_save = existing_instance.updated_at
+
+    #     self.assertNotEqual(updated_at_before_save, updated_at_after_save)
+    #     self.assertTrue(updated_at_after_save > updated_at_before_save)
+
+    #     self.assertNotEqual(prev_updated_at, obj.updated_at)
 
     def test_to_dict(self):
         data = {
