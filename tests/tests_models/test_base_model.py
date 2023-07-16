@@ -7,8 +7,6 @@ from datetime import datetime, timedelta
 import time
 import sys
 
-sys.path.append("/Users/mac/Alx/AirBnB_clone/tests/tests_models/test_base_model.py")
-# module = __import__(BaseModel)
 
 class TestBaseModel(unittest.TestCase):
     def setUp(self):
@@ -75,7 +73,6 @@ class TestBaseModel(unittest.TestCase):
         prev_updated_at = obj.updated_at
         obj.save()
 
-
     def test_save_updates_updated_at(self):
         """Test if save function updates the updated_at attribute"""
         initial_updated_at = self.base_model.updated_at
@@ -86,13 +83,13 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(updated_updated_at > initial_updated_at)
 
     def test_save_updates_created_at_on_new_instance(self):
-        """Test if save function updates the created_at attribute on a new instance"""
+        """Test if save func updates created_at on new instance"""
         new_instance = BaseModel()
         self.assertIsInstance(new_instance.created_at, datetime)
         new_instance.save()
 
     def test_save_does_not_update_created_at_on_existing_instance(self):
-        """Test if save function does not update the created_at attribute on an existing instance"""
+        """Test if save func does ! update created_at onexisting instance"""
         existing_instance = BaseModel()
         created_at_before_save = existing_instance.created_at
         existing_instance.save()
@@ -101,9 +98,9 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(created_at_before_save, created_at_after_save)
 
     def test_save_updates_updated_at_on_existing_instance(self):
-        """Test if save function updates the updated_at attribute on an existing instance"""
+        """Test if save func updates the updated_at on existing instance"""
         existing_instance = BaseModel()
-        existing_instance.save()  # Save the instance to set the initial updated_at value
+        existing_instance.save()
         prev_updated_at = existing_instance.updated_at
 
         """Artificially set an older updated_at value to test the update"""
@@ -134,41 +131,34 @@ class TestBaseModel(unittest.TestCase):
     def test_to_dict_return_type(self):
         # Check if the return type is a dictionary
         result = self.base_model.to_dict()
-        self.assertIsInstance(result, dict, "to_dict should return a dictionary")
+        self.assertIsInstance(result, dict, "to_dict should return a dict")
 
     def test_to_dict_contains_all_attributes(self):
         # Check if all attributes are present in the dictionary
         result = self.base_model.to_dict()
         expected_attributes = ['id', 'created_at', 'updated_at', '__class__']
         for attribute in expected_attributes:
-            self.assertIn(attribute, result, f"Attribute {attribute} should be present in the dictionary")
+            self.assertIn(attribute, result, f"Attr {attribute} in dict")
 
     def test_to_dict_datetime_format(self):
         # Check if 'created_at' and 'updated_at' are in the correct format
         result = self.base_model.to_dict()
-        self.assertEqual(result['created_at'], self.base_model.created_at.isoformat(),
-                         "The 'created_at' attribute should be in ISO format")
-        self.assertEqual(result['updated_at'], self.base_model.updated_at.isoformat(),
-                         "The 'updated_at' attribute should be in ISO format")
+        self.assertEqual(result['created_at'],
+                         self.base_model.created_at.isoformat())
+        self.assertEqual(result['updated_at'],
+                         self.base_model.updated_at.isoformat())
 
     def test_to_dict_class_name(self):
         # Check if the '__class__' attribute is correctly set to the class name
         result = self.base_model.to_dict()
-        self.assertEqual(result['__class__'], 'BaseModel', "__class__ attribute should be set to 'BaseModel'")
+        self.assertEqual(result['__class__'], 'BaseModel')
 
     def test_to_dict_with_custom_attributes(self):
         # Check if custom attributes are correctly added to the dictionary
-        self.base_model.custom_attribute = "custom_value"
+        self.base_model.custom_attribute = "custom_v"
         result = self.base_model.to_dict()
-        self.assertEqual(result['custom_attribute'], "custom_value", "Custom attribute should be present in the dictionary")
+        self.assertEqual(result['custom_attribute'])
 
-    # def test_to_dict_with_updated_attribute(self):
-    #     # Check if 'updated_at' attribute is updated when 'to_dict' is called
-    #     old_updated_at = self.base_model.updated_at
-    #     result = self.base_model.to_dict()
-    #     new_updated_at = self.base_model.updated_at
-    #     self.assertNotEqual(old_updated_at, new_updated_at,
-    #                         "'updated_at' attribute should be updated when 'to_dict' is called")
 
 if __name__ == '__main__':
     unittest.main()
