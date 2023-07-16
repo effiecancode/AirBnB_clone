@@ -34,7 +34,7 @@ class FileStorage:
 
     def reload(self):
         """handle reload"""
-        from models.base_model import BaseModel
+        from base_model import BaseModel
 
         try:
             with open(self.__file_path, 'r') as file:
