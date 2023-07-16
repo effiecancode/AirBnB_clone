@@ -86,13 +86,14 @@ class TestHBNBCommand(unittest.TestCase):
 
     def test_show_valid(self):
         """Test show command with valid class name and instance ID"""
-        instance_id = 'instance_id'
-        instance_repr = 'Instance Representation'
-        with patch('models.storage.all', return_value={'BaseModel.{}'.format(instance_id): instance_repr}), \
+        inst_id = 'instance_id'
+        inst_repr = 'Instance Representation'
+        my_var = 'models.storage.all'
+        with patch(my_var, return_value={f'BaseModel.{inst_id}': inst_repr}), \
              patch('sys.stdout', new=io.StringIO()) as fake_stdout:
-            self.console.do_show('BaseModel {}'.format(instance_id))
+            self.console.do_show('BaseModel {}'.format(inst_id))
             output = fake_stdout.getvalue().strip()
-            self.assertEqual(output, instance_repr)
+            self.assertEqual(output, inst_repr)
 
     def test_destroy_missing_class_name(self):
         """Test destroy command with missing class name"""
@@ -141,7 +142,6 @@ class TestHBNBCommand(unittest.TestCase):
             self.console.do_all('InvalidClass')
             output = fake_stdout.getvalue().strip()
             self.assertEqual(output, '** class doesn\'t exist **')
-
 
     def test_update_missing_class_name(self):
         """Test update command with missing class name"""
