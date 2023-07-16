@@ -42,17 +42,40 @@ class FileStorage:
     def reload(self):
         """handle reload"""
         from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
 
+        # try:
+        #     with open(self.__file_path, 'r') as file:
+        #         obj_dict = json.load(file)
+        #         for key, value in obj_dict.items():
+        #             class_name = value['__class__']
+        #             if class_name == 'BaseModel':
+        #                 obj = BaseModel(**value)
+        #             else:
+        #                 """ Handle other classes"""
+        #                 continue
+        #             self.__objects[key] = obj
+        # except FileNotFoundError:
+        #     pass
+        classes = {
+                    "State": State, "Amenity": Amenity, "Review": Review,
+                    "BaseModel": BaseModel, "City": City, "Place": Place, "User": User
+                }
+        file_name = self.__file_path
         try:
-            with open(self.__file_path, 'r') as file:
-                obj_dict = json.load(file)
-                for key, value in obj_dict.items():
-                    class_name = value['__class__']
-                    if class_name == 'BaseModel':
-                        obj = BaseModel(**value)
-                    else:
-                        """ Handle other classes"""
-                        continue
-                    self.__objects[key] = obj
+            with open(file_name, "r", encoding="utf-8") as f:
+                str_json = f.read()
+                dict_obj = json.loads(str_json)
+
+                for k in dict_obj:
+                    self.__objects[k] = classes[dict_obj[k]["__class__"]](
+                        **dict_obj[k]
+                    )
+
         except FileNotFoundError:
             pass
