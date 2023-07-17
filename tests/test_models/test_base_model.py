@@ -6,7 +6,7 @@ from models.base_model import BaseModel
 class TestBaseModel(unittest.TestCase):
     """test base model class"""
     def test_new_instance_with_no_arguments(self):
-        """Test creating a new instance of BaseModel with no arguments"""
+        """Test creating a new instance of BaseModel with no arguments """
         model = BaseModel()
         self.assertIsInstance(model, BaseModel)
         self.assertTrue(hasattr(model, 'id'))

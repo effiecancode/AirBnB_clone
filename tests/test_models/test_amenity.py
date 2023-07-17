@@ -5,7 +5,7 @@ from models.amenity import Amenity
 
 class TestAmenity(unittest.TestCase):
     def test_new_instance_with_no_arguments(self):
-        """Test creating a new instance of Amenity with no arguments"""
+        """Test creating a new instance of Amenity with no arguments """
         amenity = Amenity()
         self.assertIsInstance(amenity, Amenity)
         self.assertTrue(hasattr(amenity, 'id'))

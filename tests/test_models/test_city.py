@@ -5,7 +5,7 @@ from models.city import City
 
 class TestCity(unittest.TestCase):
     def test_new_instance_with_no_arguments(self):
-        """Test creating a new instance of City with no arguments"""
+        """Test creating a new instance of City with no arguments """
         city = City()
         self.assertIsInstance(city, City)
         self.assertTrue(hasattr(city, 'id'))
