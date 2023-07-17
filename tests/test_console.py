@@ -3,12 +3,7 @@
 import unittest
 from unittest.mock import patch
 import io
-import sys
-import ast
 from console import HBNBCommand
-
-
-sys.path.append("/home/njuguna/Desktop/alx/SE foundations/AirBnB_clone/")
 
 
 class TestHBNBCommand(unittest.TestCase):
