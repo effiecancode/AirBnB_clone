@@ -12,7 +12,7 @@ from models.place import Place
 from models.city import City
 from models.amenity import Amenity
 
- 
+
 class HBNBCommand(cmd.Cmd):
     """console class"""
     prompt = "(hbnb) "
