@@ -19,7 +19,7 @@ class BaseModel:
             kwargs.pop('__class__', None)
             self.__dict__ = kwargs
         else:
-            from __init__ import storage
+            from models import storage
             self.id = str(uuid.uuid4())
             self.created_at = dt.now()
             self.updated_at = dt.now()
@@ -33,7 +33,7 @@ class BaseModel:
 
     def save(self):
         """Updated the public instance attribute with current time"""
-        from __init__ import storage
+        from models import storage
         self.updated_at = dt.now()
         storage.save()
 
