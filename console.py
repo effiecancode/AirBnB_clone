@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-"""console"""
+"""my console"""
 import cmd
 import shlex
 import ast
