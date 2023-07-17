@@ -17,9 +17,9 @@ class TestFileStorage(unittest.TestCase):
         self.storage.save()
 
 
-    # def test_all(self):
-    #     """Test the all method"""
-    #     self.assertEqual(self.storage.all(), {})
+    def test_all(self):
+        """Test the all method"""
+        self.assertEqual(self.storage.all(), {})
 
     def test_new(self):
         """Test the new method"""
