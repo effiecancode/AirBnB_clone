@@ -110,12 +110,12 @@ class HBNBCommand(cmd.Cmd):
                 if class_name in self.options:
                     update_tokens = tokens[1][7:-1].split(', ', 1)
                     if len(update_tokens) == 2:
-                        inst_id = update_tokens[0]
+                        instance_id = update_tokens[0]
                         dictionary_repr = update_tokens[1]
                         try:
-                            attr_dict = ast.literal_eval(dictionary_repr)
-                            my_update = f"{class_name} {inst_id}", attr_dict
-                            self.do_update(my_update)
+                            attribute_dict = ast.literal_eval(dictionary_repr)
+                            m_v = f'{class_name} {instance_id}', attribute_dict
+                            self.do_update(m_v)
                             return
                         except (ValueError, SyntaxError):
                             pass
@@ -194,7 +194,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             print([str(obj) for obj in storage.all().values()])
 
-    def do_update(self, arg):
+    def do_update(self, arg, attribute_dict):
         """ updates an instance"""
         arg = arg.split()
         if len(arg) == 0:
